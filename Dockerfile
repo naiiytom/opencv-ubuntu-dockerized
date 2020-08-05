@@ -1,5 +1,7 @@
 FROM ubuntu:focal
 
+LABEL MAINTAINER="Yuttapichai Lamnaonan | y.lamnaonan@gmail.com"
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Bangkok
 
@@ -8,11 +10,11 @@ RUN apt-get update --fix-missing && \
     libgtk-3-dev libavcodec-dev libavformat-dev libswscale-dev \
     libv4l-dev libxvidcore-dev libx264-dev libpng-dev libtiff-dev \
     gfortran openexr libatlas-base-dev python3-dev python3-numpy python3-pip \
-    libtbb2 libtbb-dev libdc1394-22-dev \
-    && cd /usr/local/bin \
+    libtbb2 libtbb-dev libdc1394-22-dev && rm -rf /var/lib/apt/lists/*
+
+RUN cd /usr/local/bin \
     && ln -s /usr/bin/python3 python \
-    && pip3 install --upgrade pip \
-    && rm -rf /var/lib/apt/lists/*
+    && pip3 install --upgrade pip
 
 WORKDIR /
 ENV OPENCV_VERSION="4.4.0"
@@ -43,20 +45,11 @@ RUN wget -q https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
     && make -j`grep -c '^processor' /proc/cpuinfo` \
     && make install \
     && rm /${OPENCV_VERSION}.zip \
-    && rm -r /opencv-${OPENCV_VERSION} && \
-    ln -s \
+    && rm -r /opencv-${OPENCV_VERSION}
+
+RUN ln -s \
     /usr/local/python/cv2/python-3.8/cv2.cpython-38m-x86_64-linux-gnu.so \
-    /usr/local/lib/python3.8/site-packages/cv2.so
+    /usr/local/lib/python3.8/dist-packages/cv2.so
 
 
-RUN export python=python3 && python -c "import cv2; print(cv2.__version__)"
-
-# RUN export uid=1000 gid=1000 && \
-#     mkdir -p /home/developer && \
-#     echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
-#     echo "developer:x:${uid}:" >> /etc/group && \
-#     echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
-#     chmod 0440 /etc/sudoers.d/developer && \
-#     chown ${uid}:${gid} -R /home/developer
-
-# ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT [ "/bin/bash" ]
