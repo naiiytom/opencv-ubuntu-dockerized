@@ -17,7 +17,7 @@ RUN cd /usr/local/bin \
     && pip3 install --upgrade pip
 
 WORKDIR /
-ENV OPENCV_VERSION="4.4.0"
+ARG OPENCV_VERSION="4.4.0"
 
 RUN wget -q https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
     && unzip ${OPENCV_VERSION}.zip \
