@@ -1,5 +1,7 @@
 # OpenCV on Ubuntu Containerized
 
+build status [Unknown]
+
 ## Getting Started
 
 ### Run
